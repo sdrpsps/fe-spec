@@ -1,0 +1,32 @@
+name: Build and Deploy 构建和部署
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main branch 检出主分支
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js environment 设置 Node.js 环境
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.18.0
+
+      - name: Install dependencies and Build 安装依赖和构建
+        run: |
+          npm i -g pnpm
+          pnpm run init
+          pnpm run docs:build
+
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
+
+      - name: Deploy to GitHub Pages 部署到 GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@releases/v3
+        with:
+          BRANCH: gh-pages
+          FOLDER: docs/.vuepress/dist
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}

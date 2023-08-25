@@ -1,0 +1,12 @@
+{
+  "name": "commitlint-config",
+  "version": "0.0.0",
+  "description": "> TODO: description",
+  "author": "sdrpsps <z826700@gmail.com>",
+  "homepage": "",
+  "license": "ISC",
+  "main": "index.js",
+  "dependencies": {
+    "conventional-changelog-conventionalcommits": "^6.1.0"
+  }
+}

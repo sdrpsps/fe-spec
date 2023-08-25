@@ -1,0 +1,9 @@
+{
+  "name": "markdownlint-config",
+  "version": "0.0.0",
+  "description": "文档规范",
+  "author": "sdrpsps <z826700@gmail.com>",
+  "homepage": "",
+  "license": "ISC",
+  "main": "index.json"
+}
