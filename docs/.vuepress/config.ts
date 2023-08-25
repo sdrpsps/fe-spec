@@ -76,19 +76,19 @@ export default defineConfig4CustomTheme({
 			},
 		],
 		logo: '/img/logo.png',
-		repo: 'encode-studio-fe/fe-spec',
+		repo: 'sdrpsps/fe-spec',
 		searchMaxSuggestions: 10,
 		docsDir: 'docs',
 		footer: {
 			createYear: 2023,
 			copyrightInfo:
-				'encode studio | <a href="https://github.com/encode-studio-fe/fe-spec" target="_blank">github</a>',
+				'Sunny | <a href="https://github.com/sdrpsps/fe-spec" target="_blank">github</a>',
 		},
 
 		extendFrontmatter: {
 			author: {
-				name: '澄怀',
-				link: 'https://github.com/encode-studio-fe/fe-sepc',
+				name: 'Sunny',
+				link: 'https://github.com/sdrpsps/fe-sepc',
 			},
 		},
 	},
