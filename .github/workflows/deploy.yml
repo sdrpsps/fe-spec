@@ -25,7 +25,7 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=4096
 
       - name: Deploy to GitHub Pages 部署到 GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@releases/v3
+        uses: JamesIves/github-pages-deploy-action@releases/v4
         with:
           BRANCH: gh-pages
           FOLDER: docs/.vuepress/dist
