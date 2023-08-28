@@ -10,6 +10,8 @@
     "husky": "^8.0.3",
     "lerna": "^7.1.5",
     "markdownlint": "^0.30.0",
+    "stylelint": "^14.3.0",
+    "stylelint-scss": "^4.1.0",
     "vue-template-compiler": "^2.7.14",
     "vuepress": "^1.9.10",
     "vuepress-plugin-one-click-copy": "^1.0.6",

@@ -1,0 +1,34 @@
+{
+  "name": "stylelint-config",
+  "version": "1.0.0",
+  "description": "Sunny 自用的 CSS 规范",
+  "author": "sdrpsps <z826700@gmail.com>",
+  "homepage": "https://github.com/sdrpsps/fe-spec#readme",
+  "license": "ISC",
+  "peerDependencies": {
+    "stylelint": ">=8.3.0",
+    "stylelint-scss": ">=2.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.5.0",
+    "postcss-less": "^6.0.0",
+    "postcss-scss": "^4.0.7",
+    "stylelint": "^14.3.0",
+    "stylelint-scss": "^4.1.0"
+  },
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sdrpsps/fe-spec.git"
+  },
+  "keywords": [
+    "commit",
+    "lint"
+  ],
+  "scripts": {
+    "test": "jest"
+  },
+  "bugs": {
+    "url": "https://github.com/sdrpsps/fe-spec/issues"
+  }
+}
