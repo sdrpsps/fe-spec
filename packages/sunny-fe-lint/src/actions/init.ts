@@ -1,10 +1,10 @@
 import path from 'path';
-import fs from 'fs-extra';
 import inquirer from 'inquirer';
 import logs from '../utils/logs';
-import { PROJECT_TYPES } from '../utils/constants';
-import { InitOptions } from '../types';
+import { PACKAGE_NAME, PROJECT_TYPES } from '../utils/constants';
+import { InitOptions, PKG } from '../types';
 import checkUpdate from './update';
+import fs from 'fs-extra';
 
 // 当前执行步骤
 let step = 0;
@@ -61,6 +61,9 @@ const chooseEnablePrettier = async (): Promise<boolean> => {
 export default async (options: InitOptions) => {
   const checkVersionUpdate = options.checkVersionUpdate || true;
   const config: Record<string, any> = {}; // 初始化配置对象
+  const cwd = options.cwd || process.cwd(); // 获取当前执行命令的路径
+  const pkgPath = path.resolve(cwd, 'package.json'); // 获取 package.json 的路径
+  let pkg: PKG = fs.readJSONSync(pkgPath);
 
   // 检查版本更新
   if (checkVersionUpdate) {
@@ -106,7 +109,34 @@ export default async (options: InitOptions) => {
     config.enablePrettier = await chooseEnablePrettier();
   }
 
+  // 更新 package.json 的 scripts 字段
+  logs.info(`Step ${++step}. 更新 package.json scripts`);
+  pkg = fs.readJSONSync(pkgPath);
+  if (!pkg.scripts) {
+    pkg.scripts = {};
+  }
+  if (!pkg.scripts[`${PACKAGE_NAME}-scan`]) {
+    pkg.scripts[`${PACKAGE_NAME}-scan`] = `${PACKAGE_NAME} scan`;
+  }
+  if (!pkg.scripts[`${PACKAGE_NAME}-fix`]) {
+    pkg.scripts[`${PACKAGE_NAME}-fix`] = `${PACKAGE_NAME} fix`;
+  }
+  logs.success(`Step ${step}. 更新 package.json scripts 完成`);
+
+  // 配置 commit 卡点
+  logs.info(`Step ${++step}. 配置 git commit 卡点`);
+  if (!pkg.husky) {
+    pkg.husky = {};
+  }
+  if (!pkg.husky.hooks) {
+    pkg.husky.hooks = {};
+  }
+
+  pkg.husky.hooks['pre-commit'] = `${PACKAGE_NAME} commit-file-scan`;
+  pkg.husky.hooks['commit-msg'] = `${PACKAGE_NAME} commit-msg-scan`;
+  fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2));
+  logs.success(`Step ${step}. 配置 git commit 卡点成功`);
+
   // 完成信息
-  const log = [`初始化完成`].join('\r\n');
-  logs.result(log, true);
+  logs.result('初始化完成', true);
 };

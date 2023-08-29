@@ -39,10 +39,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var path_1 = __importDefault(require("path"));
 var inquirer_1 = __importDefault(require("inquirer"));
 var logs_1 = __importDefault(require("../utils/logs"));
 var constants_1 = require("../utils/constants");
 var update_1 = __importDefault(require("./update"));
+var fs_extra_1 = __importDefault(require("fs-extra"));
 var step = 0;
 var chooseESLintType = function () { return __awaiter(void 0, void 0, void 0, function () {
     var type;
@@ -109,12 +111,15 @@ var chooseEnablePrettier = function () { return __awaiter(void 0, void 0, void 0
     });
 }); };
 exports.default = (function (options) { return __awaiter(void 0, void 0, void 0, function () {
-    var checkVersionUpdate, config, _a, _b, _c, _d, log;
+    var checkVersionUpdate, config, cwd, pkgPath, pkg, _a, _b, _c, _d;
     return __generator(this, function (_e) {
         switch (_e.label) {
             case 0:
                 checkVersionUpdate = options.checkVersionUpdate || true;
                 config = {};
+                cwd = options.cwd || process.cwd();
+                pkgPath = path_1.default.resolve(cwd, 'package.json');
+                pkg = fs_extra_1.default.readJSONSync(pkgPath);
                 if (!checkVersionUpdate) return [3, 2];
                 return [4, (0, update_1.default)(false)];
             case 1:
@@ -168,8 +173,30 @@ exports.default = (function (options) { return __awaiter(void 0, void 0, void 0,
                 _d.enablePrettier = _e.sent();
                 _e.label = 14;
             case 14:
-                log = ["\u521D\u59CB\u5316\u5B8C\u6210"].join('\r\n');
-                logs_1.default.result(log, true);
+                logs_1.default.info("Step ".concat(++step, ". \u66F4\u65B0 package.json scripts"));
+                pkg = fs_extra_1.default.readJSONSync(pkgPath);
+                if (!pkg.scripts) {
+                    pkg.scripts = {};
+                }
+                if (!pkg.scripts["".concat(constants_1.PACKAGE_NAME, "-scan")]) {
+                    pkg.scripts["".concat(constants_1.PACKAGE_NAME, "-scan")] = "".concat(constants_1.PACKAGE_NAME, " scan");
+                }
+                if (!pkg.scripts["".concat(constants_1.PACKAGE_NAME, "-fix")]) {
+                    pkg.scripts["".concat(constants_1.PACKAGE_NAME, "-fix")] = "".concat(constants_1.PACKAGE_NAME, " fix");
+                }
+                logs_1.default.success("Step ".concat(step, ". \u66F4\u65B0 package.json scripts \u5B8C\u6210"));
+                logs_1.default.info("Step ".concat(++step, ". \u914D\u7F6E git commit \u5361\u70B9"));
+                if (!pkg.husky) {
+                    pkg.husky = {};
+                }
+                if (!pkg.husky.hooks) {
+                    pkg.husky.hooks = {};
+                }
+                pkg.husky.hooks['pre-commit'] = "".concat(constants_1.PACKAGE_NAME, " commit-file-scan");
+                pkg.husky.hooks['commit-msg'] = "".concat(constants_1.PACKAGE_NAME, " commit-msg-scan");
+                fs_extra_1.default.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2));
+                logs_1.default.success("Step ".concat(step, ". \u914D\u7F6E git commit \u5361\u70B9\u6210\u529F"));
+                logs_1.default.result('初始化完成', true);
                 return [2];
         }
     });

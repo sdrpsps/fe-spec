@@ -87,9 +87,17 @@
     "copyfiles": "copyfiles -a -u 1 \"src/config/**\" lib",
     "test": "npm run build && jest",
     "coverage": "nyc jest --silent --forceExit",
-    "prepublishOnly": "npm run test"
+    "prepublishOnly": "npm run test",
+    "sunny-fe-lint-scan": "sunny-fe-lint scan",
+    "sunny-fe-lint-fix": "sunny-fe-lint fix"
   },
   "bugs": {
     "url": "https://github.com/sdrpsps/fe-spec/issues"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "sunny-fe-lint commit-file-scan",
+      "commit-msg": "sunny-fe-lint commit-msg-scan"
+    }
   }
 }

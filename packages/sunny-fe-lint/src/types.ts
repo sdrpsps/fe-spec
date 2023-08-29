@@ -18,3 +18,17 @@ export interface InitOptions {
   // 是否禁用自动在初始化完成后安装依赖
   disableNpmInstall?: boolean;
 }
+
+// Package.json 类型
+export interface PKG {
+  eslintConfig?: any;
+  eslintIgnore?: string[];
+  stylelint?: any;
+  scripts?: Record<string, string>;
+  husky?: Record<string, any>;
+  peerDependencies?: Record<string, string>;
+  devDependencies?: Record<string, string>;
+  dependencies?: Record<string, string>;
+
+  [key: string]: any;
+}

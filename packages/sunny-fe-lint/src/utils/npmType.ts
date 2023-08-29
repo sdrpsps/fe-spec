@@ -1,7 +1,7 @@
 import { sync as commandExistsSync } from 'command-exists';
 
 // 检查 npm 类型
-const npmType: Promise<'npm' | 'pnpm'> = new Promise((resolve, reject) => {
+const npmType: Promise<'npm' | 'pnpm'> = new Promise((resolve) => {
   if (commandExistsSync('pnpm')) {
     resolve('pnpm');
   } else {

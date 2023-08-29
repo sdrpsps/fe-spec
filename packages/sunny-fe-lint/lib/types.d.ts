@@ -9,3 +9,14 @@ export interface InitOptions {
     enablePrettier?: boolean;
     disableNpmInstall?: boolean;
 }
+export interface PKG {
+    eslintConfig?: any;
+    eslintIgnore?: string[];
+    stylelint?: any;
+    scripts?: Record<string, string>;
+    husky?: Record<string, any>;
+    peerDependencies?: Record<string, string>;
+    devDependencies?: Record<string, string>;
+    dependencies?: Record<string, string>;
+    [key: string]: any;
+}
