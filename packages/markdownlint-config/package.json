@@ -1,6 +1,6 @@
 {
   "name": "sunny-markdownlint-config",
-  "version": "1.0.2-alpha.0",
+  "version": "1.0.2",
   "description": "Sunny 自用的 MarkDown 文档规范",
   "author": "sdrpsps <z826700@gmail.com>",
   "homepage": "https://github.com/sdrpsps/fe-spec.git",
