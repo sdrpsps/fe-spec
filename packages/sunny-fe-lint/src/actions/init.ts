@@ -5,6 +5,9 @@ import { PACKAGE_NAME, PROJECT_TYPES } from '../utils/constants';
 import { InitOptions, PKG } from '../types';
 import checkUpdate from './update';
 import fs from 'fs-extra';
+import npmType from '../utils/npmType';
+import spawn from 'cross-spawn';
+import conflictResolve from '../utils/conflictResolve';
 
 // 当前执行步骤
 let step = 0;
@@ -60,10 +63,12 @@ const chooseEnablePrettier = async (): Promise<boolean> => {
 // 初始化函数
 export default async (options: InitOptions) => {
   const checkVersionUpdate = options.checkVersionUpdate || true;
+  const disableNpmInstall = options.disableNpmInstall || false;
   const config: Record<string, any> = {}; // 初始化配置对象
   const cwd = options.cwd || process.cwd(); // 获取当前执行命令的路径
   const pkgPath = path.resolve(cwd, 'package.json'); // 获取 package.json 的路径
-  let pkg: PKG = fs.readJSONSync(pkgPath);
+  let pkg: PKG;
+  const isTest = process.env.NODE_ENV === 'test';
 
   // 检查版本更新
   if (checkVersionUpdate) {
@@ -107,6 +112,19 @@ export default async (options: InitOptions) => {
     config.enablePrettier = options.enablePrettier;
   } else {
     config.enablePrettier = await chooseEnablePrettier();
+  }
+
+  if (!isTest) {
+    logs.info(`Step ${++step}. 检查并处理项目中可能存在的依赖和配置冲突`);
+    pkg = await conflictResolve(cwd, options.rewriteConfig);
+    logs.success(`Step ${step}. 已完成项目依赖和配置冲突检查处理 :D`);
+
+    if (!disableNpmInstall) {
+      logs.info(`Step ${++step}. 安装依赖`);
+      const npm = await npmType;
+      spawn.sync(npm, ['i', '-D', PACKAGE_NAME], { stdio: 'inherit', cwd });
+      logs.success(`Step ${step}. 安装依赖成功 :D`);
+    }
   }
 
   // 更新 package.json 的 scripts 字段

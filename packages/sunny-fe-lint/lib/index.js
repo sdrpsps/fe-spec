@@ -61,4 +61,3 @@ var init = function (options) { return __awaiter(void 0, void 0, void 0, functio
     });
 }); };
 exports.init = init;
-(0, exports.init)({});
