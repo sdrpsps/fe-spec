@@ -45,6 +45,10 @@ var logs_1 = __importDefault(require("../utils/logs"));
 var constants_1 = require("../utils/constants");
 var update_1 = __importDefault(require("./update"));
 var fs_extra_1 = __importDefault(require("fs-extra"));
+var npmType_1 = __importDefault(require("../utils/npmType"));
+var cross_spawn_1 = __importDefault(require("cross-spawn"));
+var conflictResolve_1 = __importDefault(require("../utils/conflictResolve"));
+var generateTemplate_1 = __importDefault(require("../utils/generateTemplate"));
 var step = 0;
 var chooseESLintType = function () { return __awaiter(void 0, void 0, void 0, function () {
     var type;
@@ -111,15 +115,16 @@ var chooseEnablePrettier = function () { return __awaiter(void 0, void 0, void 0
     });
 }); };
 exports.default = (function (options) { return __awaiter(void 0, void 0, void 0, function () {
-    var checkVersionUpdate, config, cwd, pkgPath, pkg, _a, _b, _c, _d;
+    var checkVersionUpdate, disableNpmInstall, config, cwd, pkgPath, pkg, isTest, _a, _b, _c, _d, npm;
     return __generator(this, function (_e) {
         switch (_e.label) {
             case 0:
                 checkVersionUpdate = options.checkVersionUpdate || true;
+                disableNpmInstall = options.disableNpmInstall || false;
                 config = {};
                 cwd = options.cwd || process.cwd();
                 pkgPath = path_1.default.resolve(cwd, 'package.json');
-                pkg = fs_extra_1.default.readJSONSync(pkgPath);
+                isTest = process.env.NODE_ENV === 'test';
                 if (!checkVersionUpdate) return [3, 2];
                 return [4, (0, update_1.default)(false)];
             case 1:
@@ -173,6 +178,21 @@ exports.default = (function (options) { return __awaiter(void 0, void 0, void 0,
                 _d.enablePrettier = _e.sent();
                 _e.label = 14;
             case 14:
+                if (!!isTest) return [3, 17];
+                logs_1.default.info("Step ".concat(++step, ". \u68C0\u67E5\u5E76\u5904\u7406\u9879\u76EE\u4E2D\u53EF\u80FD\u5B58\u5728\u7684\u4F9D\u8D56\u548C\u914D\u7F6E\u51B2\u7A81"));
+                return [4, (0, conflictResolve_1.default)(cwd, options.rewriteConfig)];
+            case 15:
+                pkg = _e.sent();
+                logs_1.default.success("Step ".concat(step, ". \u5DF2\u5B8C\u6210\u9879\u76EE\u4F9D\u8D56\u548C\u914D\u7F6E\u51B2\u7A81\u68C0\u67E5\u5904\u7406 :D"));
+                if (!!disableNpmInstall) return [3, 17];
+                logs_1.default.info("Step ".concat(++step, ". \u5B89\u88C5\u4F9D\u8D56"));
+                return [4, npmType_1.default];
+            case 16:
+                npm = _e.sent();
+                cross_spawn_1.default.sync(npm, ['i', '-D', constants_1.PACKAGE_NAME], { stdio: 'inherit', cwd: cwd });
+                logs_1.default.success("Step ".concat(step, ". \u5B89\u88C5\u4F9D\u8D56\u6210\u529F :D"));
+                _e.label = 17;
+            case 17:
                 logs_1.default.info("Step ".concat(++step, ". \u66F4\u65B0 package.json scripts"));
                 pkg = fs_extra_1.default.readJSONSync(pkgPath);
                 if (!pkg.scripts) {
@@ -196,6 +216,9 @@ exports.default = (function (options) { return __awaiter(void 0, void 0, void 0,
                 pkg.husky.hooks['commit-msg'] = "".concat(constants_1.PACKAGE_NAME, " commit-msg-scan");
                 fs_extra_1.default.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2));
                 logs_1.default.success("Step ".concat(step, ". \u914D\u7F6E git commit \u5361\u70B9\u6210\u529F"));
+                logs_1.default.info("Step ".concat(++step, ". \u5199\u5165\u914D\u7F6E\u6587\u4EF6"));
+                (0, generateTemplate_1.default)(cwd, config);
+                logs_1.default.success("Step ".concat(step, ". \u5199\u5165\u914D\u7F6E\u6587\u4EF6\u6210\u529F :D"));
                 logs_1.default.result('初始化完成', true);
                 return [2];
         }

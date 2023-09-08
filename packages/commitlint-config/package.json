@@ -16,5 +16,6 @@
   "main": "index.js",
   "dependencies": {
     "conventional-changelog-conventionalcommits": "^6.1.0"
-  }
+  },
+  "gitHead": "ed8a6deba9299e47fcede83fb87f815b9eb7eaab"
 }

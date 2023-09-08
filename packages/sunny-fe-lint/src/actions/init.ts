@@ -8,6 +8,7 @@ import fs from 'fs-extra';
 import npmType from '../utils/npmType';
 import spawn from 'cross-spawn';
 import conflictResolve from '../utils/conflictResolve';
+import generateTemplate from '../utils/generateTemplate';
 
 // 当前执行步骤
 let step = 0;
@@ -154,6 +155,10 @@ export default async (options: InitOptions) => {
   pkg.husky.hooks['commit-msg'] = `${PACKAGE_NAME} commit-msg-scan`;
   fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2));
   logs.success(`Step ${step}. 配置 git commit 卡点成功`);
+
+  logs.info(`Step ${++step}. 写入配置文件`);
+  generateTemplate(cwd, config);
+  logs.success(`Step ${step}. 写入配置文件成功 :D`);
 
   // 完成信息
   logs.result('初始化完成', true);

@@ -43,5 +43,6 @@
     "mocha": "^10.2.0",
     "typescript": "^5.2.2",
     "vue-eslint-parser": "^9.3.1"
-  }
+  },
+  "gitHead": "ed8a6deba9299e47fcede83fb87f815b9eb7eaab"
 }

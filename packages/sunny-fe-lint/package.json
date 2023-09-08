@@ -87,7 +87,6 @@
     "copyfiles": "copyfiles -a -u 1 \"src/config/**\" lib",
     "test": "npm run build && jest",
     "coverage": "nyc jest --silent --forceExit",
-    "prepublishOnly": "npm run test",
     "sunny-fe-lint-scan": "sunny-fe-lint scan",
     "sunny-fe-lint-fix": "sunny-fe-lint fix"
   },

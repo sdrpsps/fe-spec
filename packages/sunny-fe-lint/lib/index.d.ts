@@ -1,1 +1,2 @@
-export declare const init: (options: any) => Promise<void>;
+import { InitOptions } from './types';
+export declare const init: (options: InitOptions) => Promise<void>;

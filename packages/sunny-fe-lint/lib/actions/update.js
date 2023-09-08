@@ -51,13 +51,19 @@ var getLatestVersion = function () { return __awaiter(void 0, void 0, void 0, fu
             case 0: return [4, npmType_1.default];
             case 1:
                 npm = _a.sent();
-                latestVersion = (0, child_process_1.execSync)("".concat(npm, " view ").concat(constants_1.PACKAGE_NAME, " version")).toString('utf-8').trim();
-                if (latestVersion === constants_1.PACKAGE_VERSION) {
-                    logs_1.default.info("\u5F53\u524D\u5DF2\u662F\u6700\u65B0\u7248\u672C\uFF1A".concat(constants_1.PACKAGE_VERSION));
-                    return [2, null];
+                try {
+                    latestVersion = (0, child_process_1.execSync)("".concat(npm, " view ").concat(constants_1.PACKAGE_NAME, " version")).toString('utf-8').trim();
+                    if (latestVersion === constants_1.PACKAGE_VERSION) {
+                        logs_1.default.info("\u5F53\u524D\u5DF2\u662F\u6700\u65B0\u7248\u672C\uFF1A".concat(constants_1.PACKAGE_VERSION));
+                        return [2, null];
+                    }
+                    else {
+                        return [2, compareVersion(latestVersion)];
+                    }
                 }
-                else {
-                    return [2, compareVersion(latestVersion)];
+                catch (e) {
+                    logs_1.default.warn("\u5F53\u524D\u63D2\u4EF6\u5DF2\u4E0B\u67B6");
+                    return [2, null];
                 }
                 return [2];
         }

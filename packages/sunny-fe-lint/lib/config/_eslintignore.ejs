@@ -1,9 +1,5 @@
-build/
-coverage/
-dist/
-es/
-lib/
-node_modules/
-**/*.min.js
-**/*-min.js
-**/*.bundle.js
+<%_ if (enableESLint) {  _%>
+<%_ eslintIgnores.forEach((txt) => { _%>
+    <%= txt %>
+<% }) %>
+<%_ } _%>

@@ -59,3 +59,61 @@ export const PROJECT_TYPES: Array<{ name: string; value: string }> = [
     value: 'es5',
   },
 ];
+
+// ESLint 扫描时忽略的文件或目录
+export const ESLINT_IGNORE: string[] = [
+  'node_modules/',
+  'dist/',
+  'build/',
+  'coverage/',
+  'es/',
+  'lib/',
+  '**/*.min.js',
+  '**/*-min.js',
+  '**/*.bundle.js',
+];
+
+// ESLint 扫描的文件后缀名
+export const ESLINT_EXT: string[] = ['.js', '.jsx', '.ts', '.tsx', '.vue'];
+
+// StyleLint 扫描的文件后缀名
+export const STYLELINT_EXT: string[] = ['.css', '.less', '.scss', '.sass'];
+
+// StyleLint 扫描时忽略的文件或目录
+export const STYLELINT_IGNORE: string[] = [
+  'node_modules/',
+  'dist/',
+  'build/',
+  'coverage/',
+  'es/',
+  'lib/',
+  '**/*.min.js',
+  '**/*-min.js',
+  '**/*.bundle.js',
+];
+
+// MarkdownLint 扫描的文件后缀名
+export const MARKDOWNLINT_EXT: string[] = ['.md'];
+
+// MarkdownLint 扫描时忽略的文件或目录
+export const MARKDOWNLINT_IGNORE: string[] = [
+  'node_modules/',
+  'dist/',
+  'build/',
+  'coverage/',
+  'es/',
+  'lib/',
+];
+
+// Prettier 扫描的文件后缀名
+export const PRETTIER_EXT: string[] = [...ESLINT_EXT, ...STYLELINT_EXT, ...MARKDOWNLINT_EXT];
+
+// Prettier 扫描时忽略的文件或目录
+export const PRETTIER_IGNORE: string[] = [
+  'node_modules/',
+  'dist/',
+  'build/',
+  'coverage/',
+  'es/',
+  'lib/',
+];

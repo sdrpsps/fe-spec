@@ -7,14 +7,19 @@ import ora from 'ora';
 // 检查最新版本号
 const getLatestVersion = async () => {
   const npm = await npmType;
-  // 联网获取最新版本号
-  const latestVersion = execSync(`${npm} view ${PACKAGE_NAME} version`).toString('utf-8').trim();
+  try {
+    // 联网获取最新版本号
+    const latestVersion = execSync(`${npm} view ${PACKAGE_NAME} version`).toString('utf-8').trim();
 
-  if (latestVersion === PACKAGE_VERSION) {
-    logs.info(`当前已是最新版本：${PACKAGE_VERSION}`);
+    if (latestVersion === PACKAGE_VERSION) {
+      logs.info(`当前已是最新版本：${PACKAGE_VERSION}`);
+      return null;
+    } else {
+      return compareVersion(latestVersion);
+    }
+  } catch (e) {
+    logs.warn(`当前插件已下架`);
     return null;
-  } else {
-    return compareVersion(latestVersion);
   }
 };
 

@@ -13,5 +13,6 @@
     "lint"
   ],
   "license": "ISC",
-  "main": "index.json"
+  "main": "index.json",
+  "gitHead": "ed8a6deba9299e47fcede83fb87f815b9eb7eaab"
 }
