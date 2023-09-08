@@ -1,6 +1,6 @@
 {
   "name": "sunny-eslint-config",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "index.js",
   "description": "Sunny 自用的 JavaScript TypeScript Node 规范",
   "keywords": [
