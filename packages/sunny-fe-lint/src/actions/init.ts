@@ -118,13 +118,13 @@ export default async (options: InitOptions) => {
   if (!isTest) {
     logs.info(`Step ${++step}. 检查并处理项目中可能存在的依赖和配置冲突`);
     pkg = await conflictResolve(cwd, options.rewriteConfig);
-    logs.success(`Step ${step}. 已完成项目依赖和配置冲突检查处理 :D`);
+    logs.success(`Step ${step}. 已完成项目依赖和配置冲突检查处理`);
 
     if (!disableNpmInstall) {
       logs.info(`Step ${++step}. 安装依赖`);
       const npm = await npmType;
       spawn.sync(npm, ['i', '-D', PACKAGE_NAME], { stdio: 'inherit', cwd });
-      logs.success(`Step ${step}. 安装依赖成功 :D`);
+      logs.success(`Step ${step}. 安装依赖成功`);
     }
   }
 
@@ -158,7 +158,7 @@ export default async (options: InitOptions) => {
 
   logs.info(`Step ${++step}. 写入配置文件`);
   generateTemplate(cwd, config);
-  logs.success(`Step ${step}. 写入配置文件成功 :D`);
+  logs.success(`Step ${step}. 写入配置文件成功`);
 
   // 完成信息
   logs.result('初始化完成', true);

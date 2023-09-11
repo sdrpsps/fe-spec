@@ -44,7 +44,37 @@ var commander_1 = require("commander");
 var constants_1 = require("./utils/constants");
 var path_1 = __importDefault(require("path"));
 var init_1 = __importDefault(require("./actions/init"));
+var generateTemplate_1 = __importDefault(require("./utils/generateTemplate"));
+var update_1 = __importDefault(require("./actions/update"));
+var glob_1 = __importDefault(require("glob"));
+var fs_extra_1 = __importDefault(require("fs-extra"));
+var logs_1 = __importDefault(require("./utils/logs"));
+var npmType_1 = __importDefault(require("./utils/npmType"));
+var child_process_1 = require("child_process");
+var ora_1 = __importDefault(require("ora"));
+var scan_1 = __importDefault(require("./actions/scan"));
+var printReport_1 = __importDefault(require("./utils/printReport"));
+var git_1 = require("./utils/git");
+var cross_spawn_1 = __importDefault(require("cross-spawn"));
 var cwd = process.cwd();
+var installDeps = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var lintConfigFiles, nodeModules, npm;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                lintConfigFiles = [].concat(glob_1.default.sync('.eslintrc?(.@(js|yaml|yml|json))', { cwd: cwd }), glob_1.default.sync('.stylelintrc?(.@(js|yaml|yml|json))', { cwd: cwd }), glob_1.default.sync('.markdownlint(.@(yaml|yml|json))', { cwd: cwd }));
+                nodeModules = path_1.default.resolve(cwd, 'node_modules');
+                if (!(!fs_extra_1.default.existsSync(nodeModules) && lintConfigFiles.length > 0)) return [3, 2];
+                return [4, npmType_1.default];
+            case 1:
+                npm = _a.sent();
+                logs_1.default.info("\u68C0\u6D4B\u5230\u9879\u76EE\u672A\u5B89\u88C5\u4F9D\u8D56\uFF0C\u6B63\u5728\u5B89\u88C5 ".concat(npm, " install ").concat(constants_1.PACKAGE_NAME));
+                (0, child_process_1.execSync)("cd ".concat(cwd, " && ").concat(npm, " i"));
+                _a.label = 2;
+            case 2: return [2];
+        }
+    });
+}); };
 commander_1.program
     .version(constants_1.PACKAGE_VERSION)
     .description("".concat(constants_1.PACKAGE_NAME, " \u662F Sunny \u524D\u7AEF\u7F16\u7801\u89C4\u8303\u5DE5\u7A0B\u5316 \u7684\u914D\u5957 Lint \u5DE5\u5177\uFF0C\u63D0\u4F9B\u7B80\u5355\u7684 CLI \u548C Node.js API\uFF0C\u8BA9\u9879\u76EE\u80FD\u591F\u4E00\u952E\u63A5\u5165\u3001\u4E00\u952E\u626B\u63CF\u3001\u4E00\u952E\u4FEE\u590D\u3001\u4E00\u952E\u5347\u7EA7\uFF0C\u5E76\u4E3A\u9879\u76EE\u914D\u7F6E git commit \u5361\u70B9\uFF0C\u964D\u4F4E\u9879\u76EE\u5B9E\u65BD\u89C4\u8303\u7684\u6210\u672C"));
@@ -59,6 +89,7 @@ commander_1.program
             case 0:
                 if (!cmd.vscode) return [3, 1];
                 configPath = path_1.default.resolve(cwd, "".concat(constants_1.PACKAGE_NAME, ".config.js"));
+                (0, generateTemplate_1.default)(cwd, require(configPath), true);
                 return [3, 3];
             case 1: return [4, (0, init_1.default)({ cwd: cwd, checkVersionUpdate: true })];
             case 2:
@@ -74,15 +105,126 @@ commander_1.program
     .option('-q, --quiet', '仅报告错误信息 - 默认: false')
     .option('-o, --output-report', '输出扫描出的规范问题日志')
     .option('-i, --include <dirpath>', '指定要进行规范扫描的目录')
-    .option('--no-ignore', '忽略 eslint 的 ignore 配置文件和 ignore 规则');
+    .option('--no-ignore', '忽略 eslint 的 ignore 配置文件和 ignore 规则')
+    .action(function (cmd) { return __awaiter(void 0, void 0, void 0, function () {
+    var checking, _a, results, errorCount, warningCount, runErrors, type;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0: return [4, installDeps()];
+            case 1:
+                _b.sent();
+                checking = (0, ora_1.default)();
+                checking.start("\u6267\u884C ".concat(constants_1.PACKAGE_NAME, " \u4EE3\u7801\u68C0\u67E5"));
+                return [4, (0, scan_1.default)({
+                        cwd: cwd,
+                        fix: false,
+                        include: cmd.include || cwd,
+                        quiet: Boolean(cmd.quiet),
+                        outputReport: Boolean(cmd.outputReport),
+                        ignore: cmd.ignore,
+                    })];
+            case 2:
+                _a = _b.sent(), results = _a.results, errorCount = _a.errorCount, warningCount = _a.warningCount, runErrors = _a.runErrors;
+                type = 'succeed';
+                if (runErrors.length > 0 || errorCount > 0) {
+                    type = 'error';
+                }
+                else if (warningCount > 0) {
+                    type = 'warn';
+                }
+                checking[type]();
+                if (results.length > 0) {
+                    (0, printReport_1.default)(results, false);
+                }
+                runErrors.forEach(function (err) {
+                    logs_1.default.error(err.message);
+                });
+                return [2];
+        }
+    });
+}); });
+commander_1.program
+    .command('fix')
+    .description('一键修复：自动修复项目的代码规范扫描问题')
+    .option('-i, --include <dirpath>', '指定要进行修复扫描的目录')
+    .option('--no-ignore', '忽略 eslint 的 ignore 配置文件和 ignore 规则')
+    .action(function (cmd) { return __awaiter(void 0, void 0, void 0, function () {
+    var checking, results;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4, installDeps()];
+            case 1:
+                _a.sent();
+                checking = (0, ora_1.default)();
+                checking.start("\u6267\u884C ".concat(constants_1.PACKAGE_NAME, " \u4EE3\u7801\u4FEE\u590D"));
+                return [4, (0, scan_1.default)({
+                        cwd: cwd,
+                        fix: true,
+                        include: cmd.include || cwd,
+                        ignore: cmd.ignore,
+                    })];
+            case 2:
+                results = (_a.sent()).results;
+                checking.succeed();
+                if (results.length > 0)
+                    (0, printReport_1.default)(results, true);
+                return [2];
+        }
+    });
+}); });
 commander_1.program
     .command('commit-msg-scan')
-    .description('commit message 检查: git commit 时对 commit message 进行检查');
+    .description('commit message 检查: git commit 时对 commit message 进行检查')
+    .action(function () {
+    var result = cross_spawn_1.default.sync('commitlint', ['-E', 'HUSKY_GIT_PARAMS'], { stdio: 'inherit' });
+    if (result.status !== 0) {
+        process.exit(result.status);
+    }
+});
 commander_1.program
     .command('commit-file-scan')
-    .description('代码提交检查: git commit 时对提交代码进行规范问题扫描');
+    .description('代码提交检查: git commit 时对提交代码进行规范问题扫描')
+    .option('-s, --strict', '严格模式，对 warn 和 error 问题都卡口，默认仅对 error 问题卡口')
+    .action(function (cmd) { return __awaiter(void 0, void 0, void 0, function () {
+    var files, checking, _a, results, errorCount, warningCount, _b;
+    var _c;
+    return __generator(this, function (_d) {
+        switch (_d.label) {
+            case 0: return [4, installDeps()];
+            case 1:
+                _d.sent();
+                return [4, (0, git_1.getAmendFiles)()];
+            case 2:
+                files = _d.sent();
+                if (files)
+                    logs_1.default.warn("[".concat(constants_1.PACKAGE_NAME, "] changes not staged for commit: \n").concat(files, "\n"));
+                checking = (0, ora_1.default)();
+                checking.start("\u6267\u884C ".concat(constants_1.PACKAGE_NAME, " \u4EE3\u7801\u63D0\u4EA4\u68C0\u67E5"));
+                _b = scan_1.default;
+                _c = {
+                    cwd: cwd,
+                    include: cwd,
+                    quiet: !cmd.strict
+                };
+                return [4, (0, git_1.getCommitFiles)()];
+            case 3: return [4, _b.apply(void 0, [(_c.files = _d.sent(),
+                        _c)])];
+            case 4:
+                _a = _d.sent(), results = _a.results, errorCount = _a.errorCount, warningCount = _a.warningCount;
+                if (errorCount > 0 || (cmd.strict && warningCount > 0)) {
+                    checking.fail();
+                    (0, printReport_1.default)(results, false);
+                    process.exitCode = 1;
+                }
+                else {
+                    checking.succeed();
+                }
+                return [2];
+        }
+    });
+}); });
 commander_1.program
     .command('update')
     .description("\u66F4\u65B0 ".concat(constants_1.PACKAGE_NAME, " \u81F3\u6700\u65B0\u7248\u672C"))
-    .action(function () { });
+    .action(function () { return (0, update_1.default)(true); });
 commander_1.program.parse(process.argv);

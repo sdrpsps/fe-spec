@@ -183,14 +183,14 @@ exports.default = (function (options) { return __awaiter(void 0, void 0, void 0,
                 return [4, (0, conflictResolve_1.default)(cwd, options.rewriteConfig)];
             case 15:
                 pkg = _e.sent();
-                logs_1.default.success("Step ".concat(step, ". \u5DF2\u5B8C\u6210\u9879\u76EE\u4F9D\u8D56\u548C\u914D\u7F6E\u51B2\u7A81\u68C0\u67E5\u5904\u7406 :D"));
+                logs_1.default.success("Step ".concat(step, ". \u5DF2\u5B8C\u6210\u9879\u76EE\u4F9D\u8D56\u548C\u914D\u7F6E\u51B2\u7A81\u68C0\u67E5\u5904\u7406"));
                 if (!!disableNpmInstall) return [3, 17];
                 logs_1.default.info("Step ".concat(++step, ". \u5B89\u88C5\u4F9D\u8D56"));
                 return [4, npmType_1.default];
             case 16:
                 npm = _e.sent();
                 cross_spawn_1.default.sync(npm, ['i', '-D', constants_1.PACKAGE_NAME], { stdio: 'inherit', cwd: cwd });
-                logs_1.default.success("Step ".concat(step, ". \u5B89\u88C5\u4F9D\u8D56\u6210\u529F :D"));
+                logs_1.default.success("Step ".concat(step, ". \u5B89\u88C5\u4F9D\u8D56\u6210\u529F"));
                 _e.label = 17;
             case 17:
                 logs_1.default.info("Step ".concat(++step, ". \u66F4\u65B0 package.json scripts"));
@@ -218,7 +218,7 @@ exports.default = (function (options) { return __awaiter(void 0, void 0, void 0,
                 logs_1.default.success("Step ".concat(step, ". \u914D\u7F6E git commit \u5361\u70B9\u6210\u529F"));
                 logs_1.default.info("Step ".concat(++step, ". \u5199\u5165\u914D\u7F6E\u6587\u4EF6"));
                 (0, generateTemplate_1.default)(cwd, config);
-                logs_1.default.success("Step ".concat(step, ". \u5199\u5165\u914D\u7F6E\u6587\u4EF6\u6210\u529F :D"));
+                logs_1.default.success("Step ".concat(step, ". \u5199\u5165\u914D\u7F6E\u6587\u4EF6\u6210\u529F"));
                 logs_1.default.result('初始化完成', true);
                 return [2];
         }
