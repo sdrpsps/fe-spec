@@ -1,14 +1,14 @@
 import path from 'path';
 import inquirer from 'inquirer';
 import logs from '../utils/logs';
-import { PACKAGE_NAME, PROJECT_TYPES } from '../utils/constants';
+import { PROJECT_TYPES } from '../utils/constants';
 import { InitOptions, PKG } from '../types';
 import checkUpdate from './update';
 import fs from 'fs-extra';
-import npmType from '../utils/npmType';
-import spawn from 'cross-spawn';
+import { execSync } from 'child_process';
 import conflictResolve from '../utils/conflictResolve';
 import generateTemplate from '../utils/generateTemplate';
+import depsInstall from '../utils/depsInstall';
 
 // 当前执行步骤
 let step = 0;
@@ -43,18 +43,6 @@ const chooseEnableMarkDownLint = async (): Promise<boolean> => {
     type: 'confirm',
     name: 'enable',
     message: `${++step}. 是否启用 MarkDownLint？（若没有 MarkDown 文件则不需要）：`,
-    default: true,
-  });
-
-  return enable;
-};
-
-// 选择是否启用 Prettier
-const chooseEnablePrettier = async (): Promise<boolean> => {
-  const { enable } = await inquirer.prompt({
-    type: 'confirm',
-    name: 'enable',
-    message: `${++step}. 是否启用 Prettier 格式化代码？：`,
     default: true,
   });
 
@@ -108,22 +96,13 @@ export default async (options: InitOptions) => {
     config.enableMarkdownlint = await chooseEnableMarkDownLint();
   }
 
-  // 初始化 enablePrettier
-  if (typeof options.enablePrettier === 'boolean') {
-    config.enablePrettier = options.enablePrettier;
-  } else {
-    config.enablePrettier = await chooseEnablePrettier();
-  }
-
   if (!isTest) {
     logs.info(`Step ${++step}. 检查并处理项目中可能存在的依赖和配置冲突`);
     pkg = await conflictResolve(cwd, options.rewriteConfig);
     logs.success(`Step ${step}. 已完成项目依赖和配置冲突检查处理`);
-
     if (!disableNpmInstall) {
       logs.info(`Step ${++step}. 安装依赖`);
-      const npm = await npmType;
-      spawn.sync(npm, ['i', '-D', PACKAGE_NAME], { stdio: 'inherit', cwd });
+      await depsInstall(config);
       logs.success(`Step ${step}. 安装依赖成功`);
     }
   }
@@ -131,30 +110,24 @@ export default async (options: InitOptions) => {
   // 更新 package.json 的 scripts 字段
   logs.info(`Step ${++step}. 更新 package.json scripts`);
   pkg = fs.readJSONSync(pkgPath);
+
   if (!pkg.scripts) {
     pkg.scripts = {};
   }
-  if (!pkg.scripts[`${PACKAGE_NAME}-scan`]) {
-    pkg.scripts[`${PACKAGE_NAME}-scan`] = `${PACKAGE_NAME} scan`;
-  }
-  if (!pkg.scripts[`${PACKAGE_NAME}-fix`]) {
-    pkg.scripts[`${PACKAGE_NAME}-fix`] = `${PACKAGE_NAME} fix`;
-  }
+
+  pkg.scripts[`prepare`] = `husky install`;
+  pkg.scripts[`lint`] = `eslint --fix --ext .js,jsx,.ts,.tsx,.vue ./src`;
+  pkg.scripts[`prettier`] = `prettier --write './src/**/*.{js,ts,jsx,tsx,vue,scss,css,json}'`;
+
+  fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2));
   logs.success(`Step ${step}. 更新 package.json scripts 完成`);
 
-  // 配置 commit 卡点
-  logs.info(`Step ${++step}. 配置 git commit 卡点`);
-  if (!pkg.husky) {
-    pkg.husky = {};
-  }
-  if (!pkg.husky.hooks) {
-    pkg.husky.hooks = {};
-  }
-
-  pkg.husky.hooks['pre-commit'] = `${PACKAGE_NAME} commit-file-scan`;
-  pkg.husky.hooks['commit-msg'] = `${PACKAGE_NAME} commit-msg-scan`;
-  fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2));
-  logs.success(`Step ${step}. 配置 git commit 卡点成功`);
+  // 配置 commit hooks
+  logs.info(`Step ${++step}. 配置 git commit hooks`);
+  execSync(`npx husky install`);
+  execSync(`npx husky add .husky/commit-msg 'npx commitlint --edit $1'`);
+  execSync(`npx husky add .husky/pre-commit 'npm run lint && npm run prettier --edit $1'`);
+  logs.success(`Step ${step}. 配置 git commit hooks 成功`);
 
   logs.info(`Step ${++step}. 写入配置文件`);
   generateTemplate(cwd, config);

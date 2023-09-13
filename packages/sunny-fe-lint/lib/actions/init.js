@@ -45,10 +45,10 @@ var logs_1 = __importDefault(require("../utils/logs"));
 var constants_1 = require("../utils/constants");
 var update_1 = __importDefault(require("./update"));
 var fs_extra_1 = __importDefault(require("fs-extra"));
-var npmType_1 = __importDefault(require("../utils/npmType"));
-var cross_spawn_1 = __importDefault(require("cross-spawn"));
+var child_process_1 = require("child_process");
 var conflictResolve_1 = __importDefault(require("../utils/conflictResolve"));
 var generateTemplate_1 = __importDefault(require("../utils/generateTemplate"));
+var depsInstall_1 = __importDefault(require("../utils/depsInstall"));
 var step = 0;
 var chooseESLintType = function () { return __awaiter(void 0, void 0, void 0, function () {
     var type;
@@ -98,26 +98,10 @@ var chooseEnableMarkDownLint = function () { return __awaiter(void 0, void 0, vo
         }
     });
 }); };
-var chooseEnablePrettier = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var enable;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4, inquirer_1.default.prompt({
-                    type: 'confirm',
-                    name: 'enable',
-                    message: "".concat(++step, ". \u662F\u5426\u542F\u7528 Prettier \u683C\u5F0F\u5316\u4EE3\u7801\uFF1F\uFF1A"),
-                    default: true,
-                })];
-            case 1:
-                enable = (_a.sent()).enable;
-                return [2, enable];
-        }
-    });
-}); };
 exports.default = (function (options) { return __awaiter(void 0, void 0, void 0, function () {
-    var checkVersionUpdate, disableNpmInstall, config, cwd, pkgPath, pkg, isTest, _a, _b, _c, _d, npm;
-    return __generator(this, function (_e) {
-        switch (_e.label) {
+    var checkVersionUpdate, disableNpmInstall, config, cwd, pkgPath, pkg, isTest, _a, _b, _c;
+    return __generator(this, function (_d) {
+        switch (_d.label) {
             case 0:
                 checkVersionUpdate = options.checkVersionUpdate || true;
                 disableNpmInstall = options.disableNpmInstall || false;
@@ -128,8 +112,8 @@ exports.default = (function (options) { return __awaiter(void 0, void 0, void 0,
                 if (!checkVersionUpdate) return [3, 2];
                 return [4, (0, update_1.default)(false)];
             case 1:
-                _e.sent();
-                _e.label = 2;
+                _d.sent();
+                _d.label = 2;
             case 2:
                 if (typeof options.enableESLint === 'boolean') {
                     config.enableESLint = options.enableESLint;
@@ -145,8 +129,8 @@ exports.default = (function (options) { return __awaiter(void 0, void 0, void 0,
                 _a = config;
                 return [4, chooseESLintType()];
             case 4:
-                _a.eslintType = _e.sent();
-                _e.label = 5;
+                _a.eslintType = _d.sent();
+                _d.label = 5;
             case 5:
                 if (!(typeof options.enableStylelint === 'boolean')) return [3, 6];
                 config.enableStylelint = options.enableStylelint;
@@ -155,8 +139,8 @@ exports.default = (function (options) { return __awaiter(void 0, void 0, void 0,
                 _b = config;
                 return [4, chooseEnableStyleLint(!/node/.test(config.eslintType))];
             case 7:
-                _b.enableStylelint = _e.sent();
-                _e.label = 8;
+                _b.enableStylelint = _d.sent();
+                _d.label = 8;
             case 8:
                 if (!(typeof options.enableMarkdownlint === 'boolean')) return [3, 9];
                 config.enableMarkdownlint = options.enableMarkdownlint;
@@ -165,57 +149,38 @@ exports.default = (function (options) { return __awaiter(void 0, void 0, void 0,
                 _c = config;
                 return [4, chooseEnableMarkDownLint()];
             case 10:
-                _c.enableMarkdownlint = _e.sent();
-                _e.label = 11;
+                _c.enableMarkdownlint = _d.sent();
+                _d.label = 11;
             case 11:
-                if (!(typeof options.enablePrettier === 'boolean')) return [3, 12];
-                config.enablePrettier = options.enablePrettier;
-                return [3, 14];
-            case 12:
-                _d = config;
-                return [4, chooseEnablePrettier()];
-            case 13:
-                _d.enablePrettier = _e.sent();
-                _e.label = 14;
-            case 14:
-                if (!!isTest) return [3, 17];
+                if (!!isTest) return [3, 14];
                 logs_1.default.info("Step ".concat(++step, ". \u68C0\u67E5\u5E76\u5904\u7406\u9879\u76EE\u4E2D\u53EF\u80FD\u5B58\u5728\u7684\u4F9D\u8D56\u548C\u914D\u7F6E\u51B2\u7A81"));
                 return [4, (0, conflictResolve_1.default)(cwd, options.rewriteConfig)];
-            case 15:
-                pkg = _e.sent();
+            case 12:
+                pkg = _d.sent();
                 logs_1.default.success("Step ".concat(step, ". \u5DF2\u5B8C\u6210\u9879\u76EE\u4F9D\u8D56\u548C\u914D\u7F6E\u51B2\u7A81\u68C0\u67E5\u5904\u7406"));
-                if (!!disableNpmInstall) return [3, 17];
+                if (!!disableNpmInstall) return [3, 14];
                 logs_1.default.info("Step ".concat(++step, ". \u5B89\u88C5\u4F9D\u8D56"));
-                return [4, npmType_1.default];
-            case 16:
-                npm = _e.sent();
-                cross_spawn_1.default.sync(npm, ['i', '-D', constants_1.PACKAGE_NAME], { stdio: 'inherit', cwd: cwd });
+                return [4, (0, depsInstall_1.default)(config)];
+            case 13:
+                _d.sent();
                 logs_1.default.success("Step ".concat(step, ". \u5B89\u88C5\u4F9D\u8D56\u6210\u529F"));
-                _e.label = 17;
-            case 17:
+                _d.label = 14;
+            case 14:
                 logs_1.default.info("Step ".concat(++step, ". \u66F4\u65B0 package.json scripts"));
                 pkg = fs_extra_1.default.readJSONSync(pkgPath);
                 if (!pkg.scripts) {
                     pkg.scripts = {};
                 }
-                if (!pkg.scripts["".concat(constants_1.PACKAGE_NAME, "-scan")]) {
-                    pkg.scripts["".concat(constants_1.PACKAGE_NAME, "-scan")] = "".concat(constants_1.PACKAGE_NAME, " scan");
-                }
-                if (!pkg.scripts["".concat(constants_1.PACKAGE_NAME, "-fix")]) {
-                    pkg.scripts["".concat(constants_1.PACKAGE_NAME, "-fix")] = "".concat(constants_1.PACKAGE_NAME, " fix");
-                }
-                logs_1.default.success("Step ".concat(step, ". \u66F4\u65B0 package.json scripts \u5B8C\u6210"));
-                logs_1.default.info("Step ".concat(++step, ". \u914D\u7F6E git commit \u5361\u70B9"));
-                if (!pkg.husky) {
-                    pkg.husky = {};
-                }
-                if (!pkg.husky.hooks) {
-                    pkg.husky.hooks = {};
-                }
-                pkg.husky.hooks['pre-commit'] = "".concat(constants_1.PACKAGE_NAME, " commit-file-scan");
-                pkg.husky.hooks['commit-msg'] = "".concat(constants_1.PACKAGE_NAME, " commit-msg-scan");
+                pkg.scripts["prepare"] = "husky install";
+                pkg.scripts["lint"] = "eslint --fix --ext .js,jsx,.ts,.tsx,.vue ./src";
+                pkg.scripts["prettier"] = "prettier --write './src/**/*.{js,ts,jsx,tsx,vue,scss,css,json}'";
                 fs_extra_1.default.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2));
-                logs_1.default.success("Step ".concat(step, ". \u914D\u7F6E git commit \u5361\u70B9\u6210\u529F"));
+                logs_1.default.success("Step ".concat(step, ". \u66F4\u65B0 package.json scripts \u5B8C\u6210"));
+                logs_1.default.info("Step ".concat(++step, ". \u914D\u7F6E git commit hooks"));
+                (0, child_process_1.execSync)("npx husky install");
+                (0, child_process_1.execSync)("npx husky add .husky/commit-msg 'npx commitlint --edit $1'");
+                (0, child_process_1.execSync)("npx husky add .husky/pre-commit 'npm run lint && npm run prettier --edit $1'");
+                logs_1.default.success("Step ".concat(step, ". \u914D\u7F6E git commit hooks \u6210\u529F"));
                 logs_1.default.info("Step ".concat(++step, ". \u5199\u5165\u914D\u7F6E\u6587\u4EF6"));
                 (0, generateTemplate_1.default)(cwd, config);
                 logs_1.default.success("Step ".concat(step, ". \u5199\u5165\u914D\u7F6E\u6587\u4EF6\u6210\u529F"));
