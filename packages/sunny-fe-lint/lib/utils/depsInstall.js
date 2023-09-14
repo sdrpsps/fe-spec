@@ -99,6 +99,7 @@ exports.default = (function (config) { return __awaiter(void 0, void 0, void 0, 
                     config.eslintType.includes('react') ? eslintDeps.react : '',
                     config.eslintType.includes('vue') ? eslintDeps.vue : '',
                     config.enableStylelint ? stylelintDeps.join(' ') : '',
+                    config.enableMarkdownlint ? 'markdownlint' : '',
                 ], false).filter(Boolean);
                 return [4, npmType_1.default];
             case 1:

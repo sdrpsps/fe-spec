@@ -42,6 +42,8 @@ export default async (config: Record<string, any>) => {
     config.eslintType.includes('vue') ? eslintDeps.vue : '',
     // 根据是否启用 stylelint 选择依赖
     config.enableStylelint ? stylelintDeps.join(' ') : '',
+    // 根据是否启用 markdownlint 选择依赖
+    config.enableMarkdownlint ? 'markdownlint' : '',
   ].filter(Boolean);
 
   // 选择 npm 包管理器
