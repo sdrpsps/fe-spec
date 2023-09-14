@@ -25,12 +25,23 @@ export default async (config: Record<string, any>) => {
     vue: 'vue-eslint-parser eslint-plugin-vue',
   };
 
+  // stylelint 相关依赖
+  const stylelintDeps = [
+    'stylelint',
+    'stylelint-scss',
+    'stylelint-config-prettier',
+    'stylelint-config-recess-order',
+  ];
+
   // 安装依赖列表
   const dependencies = [
     ...defaultDeps,
+    // 根据 eslint 类型选择依赖
     config.eslintType.includes('typescript') ? eslintDeps.typescript : '',
     config.eslintType.includes('react') ? eslintDeps.react : '',
     config.eslintType.includes('vue') ? eslintDeps.vue : '',
+    // 根据是否启用 stylelint 选择依赖
+    config.enableStylelint ? stylelintDeps.join(' ') : '',
   ].filter(Boolean);
 
   // 选择 npm 包管理器

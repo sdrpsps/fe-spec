@@ -124,9 +124,11 @@ export default async (options: InitOptions) => {
 
   // 配置 commit hooks
   logs.info(`Step ${++step}. 配置 git commit hooks`);
-  execSync(`npx husky install`);
-  execSync(`npx husky add .husky/commit-msg 'npx commitlint --edit $1'`);
-  execSync(`npx husky add .husky/pre-commit 'npm run lint && npm run prettier --edit $1'`);
+  if (!fs.existsSync(path.resolve(cwd, '.husky'))) {
+    execSync(`npx husky install`);
+    execSync(`npx husky add .husky/commit-msg 'npx commitlint --edit $1'`);
+    execSync(`npx husky add .husky/pre-commit 'npm run lint && npm run prettier --edit $1'`);
+  }
   logs.success(`Step ${step}. 配置 git commit hooks 成功`);
 
   logs.info(`Step ${++step}. 写入配置文件`);

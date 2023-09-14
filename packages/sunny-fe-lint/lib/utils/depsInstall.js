@@ -67,7 +67,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var npmType_1 = __importDefault(require("./npmType"));
 var child_process_1 = require("child_process");
 exports.default = (function (config) { return __awaiter(void 0, void 0, void 0, function () {
-    var defaultDeps, eslintDeps, dependencies, npm;
+    var defaultDeps, eslintDeps, stylelintDeps, dependencies, npm;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -88,10 +88,17 @@ exports.default = (function (config) { return __awaiter(void 0, void 0, void 0, 
                     react: '@babel/preset-react@latest eslint-plugin-react',
                     vue: 'vue-eslint-parser eslint-plugin-vue',
                 };
+                stylelintDeps = [
+                    'stylelint',
+                    'stylelint-scss',
+                    'stylelint-config-prettier',
+                    'stylelint-config-recess-order',
+                ];
                 dependencies = __spreadArray(__spreadArray([], __read(defaultDeps), false), [
                     config.eslintType.includes('typescript') ? eslintDeps.typescript : '',
                     config.eslintType.includes('react') ? eslintDeps.react : '',
                     config.eslintType.includes('vue') ? eslintDeps.vue : '',
+                    config.enableStylelint ? stylelintDeps.join(' ') : '',
                 ], false).filter(Boolean);
                 return [4, npmType_1.default];
             case 1:

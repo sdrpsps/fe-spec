@@ -177,9 +177,11 @@ exports.default = (function (options) { return __awaiter(void 0, void 0, void 0,
                 fs_extra_1.default.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2));
                 logs_1.default.success("Step ".concat(step, ". \u66F4\u65B0 package.json scripts \u5B8C\u6210"));
                 logs_1.default.info("Step ".concat(++step, ". \u914D\u7F6E git commit hooks"));
-                (0, child_process_1.execSync)("npx husky install");
-                (0, child_process_1.execSync)("npx husky add .husky/commit-msg 'npx commitlint --edit $1'");
-                (0, child_process_1.execSync)("npx husky add .husky/pre-commit 'npm run lint && npm run prettier --edit $1'");
+                if (!fs_extra_1.default.existsSync(path_1.default.resolve(cwd, '.husky'))) {
+                    (0, child_process_1.execSync)("npx husky install");
+                    (0, child_process_1.execSync)("npx husky add .husky/commit-msg 'npx commitlint --edit $1'");
+                    (0, child_process_1.execSync)("npx husky add .husky/pre-commit 'npm run lint && npm run prettier --edit $1'");
+                }
                 logs_1.default.success("Step ".concat(step, ". \u914D\u7F6E git commit hooks \u6210\u529F"));
                 logs_1.default.info("Step ".concat(++step, ". \u5199\u5165\u914D\u7F6E\u6587\u4EF6"));
                 (0, generateTemplate_1.default)(cwd, config);
