@@ -1,3 +1,0 @@
-module.exports = {
-extends: ['alloy',<% if (eslintType.includes('typescript')) { %>'alloy/typescript',<% } %><% if (eslintType.includes('vue')) { %>'alloy/vue',<% } %><% if (eslintType.includes('react')) { %>'alloy/react',<% } %>'prettier']
-};

@@ -76,18 +76,13 @@ exports.default = (function (config) { return __awaiter(void 0, void 0, void 0, 
                     'eslint',
                     '@babel/core',
                     '@babel/eslint-parser',
+                    'eslint-config-alloy',
                     'eslint-config-prettier',
                     'eslint-plugin-prettier',
                     'husky',
                     'commitlint',
                     'sunny-commitlint-config',
                 ];
-                if (config.eslintType === 'vue2') {
-                    defaultDeps.push('eslint-config-alloy@3');
-                }
-                else {
-                    defaultDeps.push('eslint-config-alloy');
-                }
                 eslintDeps = {
                     typescript: 'typescript @typescript-eslint/parser @typescript-eslint/eslint-plugin',
                     react: '@babel/preset-react@latest eslint-plugin-react',
@@ -101,7 +96,7 @@ exports.default = (function (config) { return __awaiter(void 0, void 0, void 0, 
                 return [4, npmType_1.default];
             case 1:
                 npm = _a.sent();
-                (0, child_process_1.execSync)("".concat(npm, " i -D ").concat(dependencies.join(' ')), { stdio: 'inherit' });
+                (0, child_process_1.execSync)("".concat(npm, " add -D ").concat(dependencies.join(' ')), { stdio: 'inherit' });
                 return [2];
         }
     });

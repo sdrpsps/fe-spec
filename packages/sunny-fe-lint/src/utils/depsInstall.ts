@@ -8,19 +8,13 @@ export default async (config: Record<string, any>) => {
     'eslint',
     '@babel/core',
     '@babel/eslint-parser',
+    'eslint-config-alloy',
     'eslint-config-prettier',
     'eslint-plugin-prettier',
     'husky',
     'commitlint',
     'sunny-commitlint-config',
   ];
-
-  // Vue2 使用不同版本
-  if (config.eslintType === 'vue2') {
-    defaultDeps.push('eslint-config-alloy@3');
-  } else {
-    defaultDeps.push('eslint-config-alloy');
-  }
 
   // eslint 相关依赖
   const eslintDeps = {
@@ -41,5 +35,5 @@ export default async (config: Record<string, any>) => {
   const npm = await npmType;
 
   // 开始安装依赖
-  execSync(`${npm} i -D ${dependencies.join(' ')}`, { stdio: 'inherit' });
+  execSync(`${npm} add -D ${dependencies.join(' ')}`, { stdio: 'inherit' });
 };

@@ -102,7 +102,7 @@ export default async (options: InitOptions) => {
     logs.success(`Step ${step}. 已完成项目依赖和配置冲突检查处理`);
     if (!disableNpmInstall) {
       logs.info(`Step ${++step}. 安装依赖`);
-      await depsInstall(config);
+      // await depsInstall(config);
       logs.success(`Step ${step}. 安装依赖成功`);
     }
   }

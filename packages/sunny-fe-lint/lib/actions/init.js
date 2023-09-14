@@ -48,7 +48,6 @@ var fs_extra_1 = __importDefault(require("fs-extra"));
 var child_process_1 = require("child_process");
 var conflictResolve_1 = __importDefault(require("../utils/conflictResolve"));
 var generateTemplate_1 = __importDefault(require("../utils/generateTemplate"));
-var depsInstall_1 = __importDefault(require("../utils/depsInstall"));
 var step = 0;
 var chooseESLintType = function () { return __awaiter(void 0, void 0, void 0, function () {
     var type;
@@ -152,20 +151,18 @@ exports.default = (function (options) { return __awaiter(void 0, void 0, void 0,
                 _c.enableMarkdownlint = _d.sent();
                 _d.label = 11;
             case 11:
-                if (!!isTest) return [3, 14];
+                if (!!isTest) return [3, 13];
                 logs_1.default.info("Step ".concat(++step, ". \u68C0\u67E5\u5E76\u5904\u7406\u9879\u76EE\u4E2D\u53EF\u80FD\u5B58\u5728\u7684\u4F9D\u8D56\u548C\u914D\u7F6E\u51B2\u7A81"));
                 return [4, (0, conflictResolve_1.default)(cwd, options.rewriteConfig)];
             case 12:
                 pkg = _d.sent();
                 logs_1.default.success("Step ".concat(step, ". \u5DF2\u5B8C\u6210\u9879\u76EE\u4F9D\u8D56\u548C\u914D\u7F6E\u51B2\u7A81\u68C0\u67E5\u5904\u7406"));
-                if (!!disableNpmInstall) return [3, 14];
-                logs_1.default.info("Step ".concat(++step, ". \u5B89\u88C5\u4F9D\u8D56"));
-                return [4, (0, depsInstall_1.default)(config)];
+                if (!disableNpmInstall) {
+                    logs_1.default.info("Step ".concat(++step, ". \u5B89\u88C5\u4F9D\u8D56"));
+                    logs_1.default.success("Step ".concat(step, ". \u5B89\u88C5\u4F9D\u8D56\u6210\u529F"));
+                }
+                _d.label = 13;
             case 13:
-                _d.sent();
-                logs_1.default.success("Step ".concat(step, ". \u5B89\u88C5\u4F9D\u8D56\u6210\u529F"));
-                _d.label = 14;
-            case 14:
                 logs_1.default.info("Step ".concat(++step, ". \u66F4\u65B0 package.json scripts"));
                 pkg = fs_extra_1.default.readJSONSync(pkgPath);
                 if (!pkg.scripts) {

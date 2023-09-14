@@ -52,15 +52,11 @@ exports.PROJECT_TYPES = [
         value: 'typescript/react',
     },
     {
-        name: 'Vue2 项目（JavaScript）',
-        value: 'vue2',
+        name: 'Vue 项目（JavaScript）',
+        value: 'vue',
     },
     {
-        name: 'Vue3 项目（JavaScript）',
-        value: 'vue3',
-    },
-    {
-        name: 'Vue3 项目（TypeScript）',
+        name: 'Vue 项目（TypeScript）',
         value: 'typescript/vue',
     },
     {
