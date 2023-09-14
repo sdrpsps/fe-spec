@@ -59,9 +59,6 @@
     "strip-ansi": "^6.0.0",
     "stylelint": "^14.3.0",
     "stylelint-scss": "^4.1.0",
-    "sunny-commitlint-config": "workspace:^",
-    "sunny-markdownlint-config": "workspace:^",
-    "sunny-stylelint-config": "workspace:^",
     "terminal-link": "^2.1.1",
     "text-table": "^0.2.0"
   },
@@ -74,17 +71,9 @@
     "build": "rm -rf lib && npm run copyfiles && tsc",
     "copyfiles": "copyfiles -a -u 1 \"src/config/**\" lib",
     "test": "npm run build && jest",
-    "coverage": "nyc jest --silent --forceExit",
-    "sunny-fe-lint-scan": "sunny-fe-lint scan",
-    "sunny-fe-lint-fix": "sunny-fe-lint fix"
+    "coverage": "nyc jest --silent --forceExit"
   },
   "bugs": {
     "url": "https://github.com/sdrpsps/fe-spec/issues"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "sunny-fe-lint commit-file-scan",
-      "commit-msg": "sunny-fe-lint commit-msg-scan"
-    }
   }
 }
