@@ -46,30 +46,7 @@ var path_1 = __importDefault(require("path"));
 var init_1 = __importDefault(require("./actions/init"));
 var generateTemplate_1 = __importDefault(require("./utils/generateTemplate"));
 var update_1 = __importDefault(require("./actions/update"));
-var glob_1 = __importDefault(require("glob"));
-var fs_extra_1 = __importDefault(require("fs-extra"));
-var logs_1 = __importDefault(require("./utils/logs"));
-var npmType_1 = __importDefault(require("./utils/npmType"));
-var child_process_1 = require("child_process");
 var cwd = process.cwd();
-var installDeps = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var lintConfigFiles, nodeModules, npm;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                lintConfigFiles = [].concat(glob_1.default.sync('.eslintrc?(.@(js|yaml|yml|json))', { cwd: cwd }), glob_1.default.sync('.stylelintrc?(.@(js|yaml|yml|json))', { cwd: cwd }), glob_1.default.sync('.markdownlint(.@(yaml|yml|json))', { cwd: cwd }));
-                nodeModules = path_1.default.resolve(cwd, 'node_modules');
-                if (!(!fs_extra_1.default.existsSync(nodeModules) && lintConfigFiles.length > 0)) return [3, 2];
-                return [4, npmType_1.default];
-            case 1:
-                npm = _a.sent();
-                logs_1.default.info("\u68C0\u6D4B\u5230\u9879\u76EE\u672A\u5B89\u88C5\u4F9D\u8D56\uFF0C\u6B63\u5728\u5B89\u88C5 ".concat(npm, " install ").concat(constants_1.PACKAGE_NAME));
-                (0, child_process_1.execSync)("cd ".concat(cwd, " && ").concat(npm, " i"));
-                _a.label = 2;
-            case 2: return [2];
-        }
-    });
-}); };
 commander_1.program
     .version(constants_1.PACKAGE_VERSION)
     .description("".concat(constants_1.PACKAGE_NAME, " \u662F Sunny \u524D\u7AEF\u7F16\u7801\u89C4\u8303\u5DE5\u7A0B\u5316 \u7684\u914D\u5957 Lint \u5DE5\u5177\uFF0C\u63D0\u4F9B\u7B80\u5355\u7684 CLI \u548C Node.js API\uFF0C\u8BA9\u9879\u76EE\u80FD\u591F\u4E00\u952E\u63A5\u5165\u3001\u4E00\u952E\u626B\u63CF\u3001\u4E00\u952E\u4FEE\u590D\u3001\u4E00\u952E\u5347\u7EA7\uFF0C\u5E76\u4E3A\u9879\u76EE\u914D\u7F6E git commit \u5361\u70B9\uFF0C\u964D\u4F4E\u9879\u76EE\u5B9E\u65BD\u89C4\u8303\u7684\u6210\u672C"));

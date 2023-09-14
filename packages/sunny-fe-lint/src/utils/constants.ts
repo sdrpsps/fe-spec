@@ -95,13 +95,3 @@ export const MARKDOWNLINT_IGNORE: string[] = [
 
 // Prettier 扫描的文件后缀名
 export const PRETTIER_EXT: string[] = [...ESLINT_EXT, ...STYLELINT_EXT, ...MARKDOWNLINT_EXT];
-
-// Prettier 扫描时忽略的文件或目录
-export const PRETTIER_IGNORE: string[] = [
-  'node_modules/',
-  'dist/',
-  'build/',
-  'coverage/',
-  'es/',
-  'lib/',
-];

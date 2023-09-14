@@ -80,8 +80,8 @@ exports.default = (function (config) { return __awaiter(void 0, void 0, void 0, 
                     'eslint-config-prettier',
                     'eslint-plugin-prettier',
                     'husky',
-                    'commitlint',
-                    'sunny-commitlint-config',
+                    '@commitlint/cli',
+                    '@commitlint/config-conventional',
                 ];
                 eslintDeps = {
                     typescript: 'typescript @typescript-eslint/parser @typescript-eslint/eslint-plugin',

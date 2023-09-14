@@ -1,7 +1,7 @@
 import path from 'path';
 import inquirer from 'inquirer';
 import logs from '../utils/logs';
-import { PROJECT_TYPES } from '../utils/constants';
+import { ESLINT_EXT, PRETTIER_EXT, PROJECT_TYPES } from '../utils/constants';
 import { InitOptions, PKG } from '../types';
 import checkUpdate from './update';
 import fs from 'fs-extra';
@@ -102,7 +102,7 @@ export default async (options: InitOptions) => {
     logs.success(`Step ${step}. 已完成项目依赖和配置冲突检查处理`);
     if (!disableNpmInstall) {
       logs.info(`Step ${++step}. 安装依赖`);
-      // await depsInstall(config);
+      await depsInstall(config);
       logs.success(`Step ${step}. 安装依赖成功`);
     }
   }
@@ -116,8 +116,8 @@ export default async (options: InitOptions) => {
   }
 
   pkg.scripts[`prepare`] = `husky install`;
-  pkg.scripts[`lint`] = `eslint --fix --ext .js,jsx,.ts,.tsx,.vue ./src`;
-  pkg.scripts[`prettier`] = `prettier --write './src/**/*.{js,ts,jsx,tsx,vue,scss,css,json}'`;
+  pkg.scripts[`lint`] = `eslint --fix --ext ${ESLINT_EXT.join()} ./src`;
+  pkg.scripts[`prettier`] = `prettier --write './src/**/*{${PRETTIER_EXT.join()}}'`;
 
   fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2));
   logs.success(`Step ${step}. 更新 package.json scripts 完成`);

@@ -28,7 +28,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PRETTIER_IGNORE = exports.PRETTIER_EXT = exports.MARKDOWNLINT_IGNORE = exports.MARKDOWNLINT_EXT = exports.STYLELINT_IGNORE = exports.STYLELINT_EXT = exports.ESLINT_EXT = exports.ESLINT_IGNORE = exports.PROJECT_TYPES = exports.PACKAGE_VERSION = exports.PACKAGE_NAME = void 0;
+exports.PRETTIER_EXT = exports.MARKDOWNLINT_IGNORE = exports.MARKDOWNLINT_EXT = exports.STYLELINT_IGNORE = exports.STYLELINT_EXT = exports.ESLINT_EXT = exports.ESLINT_IGNORE = exports.PROJECT_TYPES = exports.PACKAGE_VERSION = exports.PACKAGE_NAME = void 0;
 var fs_extra_1 = __importDefault(require("fs-extra"));
 var path_1 = __importDefault(require("path"));
 var PACKAGE_JSON_CONFIG = JSON.parse(fs_extra_1.default.readFileSync(path_1.default.join(__dirname, '../../package.json'), 'utf-8'));
@@ -102,11 +102,3 @@ exports.MARKDOWNLINT_IGNORE = [
     'lib/',
 ];
 exports.PRETTIER_EXT = __spreadArray(__spreadArray(__spreadArray([], __read(exports.ESLINT_EXT), false), __read(exports.STYLELINT_EXT), false), __read(exports.MARKDOWNLINT_EXT), false);
-exports.PRETTIER_IGNORE = [
-    'node_modules/',
-    'dist/',
-    'build/',
-    'coverage/',
-    'es/',
-    'lib/',
-];

@@ -5,15 +5,17 @@ export default async (config: Record<string, any>) => {
   // 默认依赖
   const defaultDeps = [
     'prettier',
+    // eslint 相关依赖
     'eslint',
     '@babel/core',
     '@babel/eslint-parser',
     'eslint-config-alloy',
     'eslint-config-prettier',
     'eslint-plugin-prettier',
+    // commitlint 相关依赖
     'husky',
-    'commitlint',
-    'sunny-commitlint-config',
+    '@commitlint/cli',
+    '@commitlint/config-conventional',
   ];
 
   // eslint 相关依赖

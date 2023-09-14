@@ -5,32 +5,8 @@ import path from 'path';
 import init from './actions/init';
 import generateTemplate from './utils/generateTemplate';
 import update from './actions/update';
-import glob from 'glob';
-import fs from 'fs-extra';
-import logs from './utils/logs';
-import npmType from './utils/npmType';
-import { execSync } from 'child_process';
-import spawn from 'cross-spawn';
 
 const cwd = process.cwd();
-
-// 检查是否安装了依赖，因为具体配置在依赖当中，否则找不到配置文件
-const installDeps = async () => {
-  const lintConfigFiles = [].concat(
-    glob.sync('.eslintrc?(.@(js|yaml|yml|json))', { cwd }),
-    glob.sync('.stylelintrc?(.@(js|yaml|yml|json))', { cwd }),
-    glob.sync('.markdownlint(.@(yaml|yml|json))', { cwd }),
-  );
-
-  const nodeModules = path.resolve(cwd, 'node_modules');
-
-  // 如果 node_modules 不存在，并且配置文件存在，则安装依赖
-  if (!fs.existsSync(nodeModules) && lintConfigFiles.length > 0) {
-    const npm = await npmType;
-    logs.info(`检测到项目未安装依赖，正在安装 ${npm} install ${PACKAGE_NAME}`);
-    execSync(`cd ${cwd} && ${npm} i`);
-  }
-};
 
 program
   .version(PACKAGE_VERSION)
